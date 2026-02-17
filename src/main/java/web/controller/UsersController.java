@@ -19,12 +19,6 @@ public class UsersController {
     private UserService userService;
 
     @GetMapping("/")
-    public String redirectToUsers() {
-        return "redirect:/users";
-    }
-
-
-    @GetMapping("/users")
     public String showAllUsers(Model model) {
         List<User> allUsers = userService.getAllUsers();
         model.addAttribute("allUsers", allUsers);
@@ -43,7 +37,7 @@ public class UsersController {
     @RequestMapping("/saveUser")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.saveUser(user);
-        return "redirect: /users";
+        return "redirect:/";
     }
 
     @RequestMapping("/updateUser")
@@ -56,7 +50,7 @@ public class UsersController {
     @RequestMapping("/deleteUser")
     public String deleteUser(@RequestParam("id") long id) {
         userService.deleteUser(id);
-        return "redirect: /users";
+        return "redirect:/";
     }
 
 }
