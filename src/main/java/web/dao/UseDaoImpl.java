@@ -25,14 +25,35 @@ public class UseDaoImpl implements UserDao {
 
     @Override
     public User getUser(Long id) {
-        return entityManager.find(User.class, id);
+        User user = entityManager.find(User.class, id);
+        if (user!= null) {
+            return user;
+        } else {
+            throw new RuntimeException("Ошибка получения пользователя: пользователя с таким id нет");
+        }
     }
 
     @Override
     public void deleteUser(Long id) {
-        User user = entityManager.find(User.class, id);
-        if (user != null) {
+        try {
+            User user = getUser(id);
             entityManager.remove(user);
+        } catch (RuntimeException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateUser(Long id, User userUpdate) {
+        try {
+            User user = getUser(id);
+            user.setName(userUpdate.getName());
+            user.setSurname(userUpdate.getSurname());
+            user.setAge(userUpdate.getAge());
+            user.setCitizenship(userUpdate.getCitizenship());
+            saveUser(user);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
