@@ -7,6 +7,7 @@ import web.dao.UserDao;
 import web.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,17 +27,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(Long id) {
-        return userDao.getUser(id);
+    public User getUserById(Long id) {
+        return Optional.ofNullable(userDao.getUserById(id))
+                .orElseThrow(() -> new RuntimeException("Ошибка получения пользователя: пользователя с таким id нет"));
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userDao.deleteUser(id);
+    public void deleteUserById(Long id) {
+        User user = getUserById(id);
+        userDao.deleteUserById(user.getId());
     }
 
     @Override
-    public void updateUser(Long id, User userUpdate) { userDao.updateUser(id, userUpdate); }
-
+    public void updateUser(Long id, User userUpdate) {
+        User user = getUserById(id);
+        user.setName(userUpdate.getName());
+        user.setSurname(userUpdate.getSurname());
+        user.setAge(userUpdate.getAge());
+        user.setCitizenship(userUpdate.getCitizenship());
+        saveUser(user);
+    }
 
 }
